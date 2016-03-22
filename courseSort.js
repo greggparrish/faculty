@@ -6,7 +6,7 @@ Exports.Modules = (function($, undefined) {
   var $b = "coursebuttonblack",
   course = '',
   ftags = '',
-  gallatinAPI = "http://api.flickr.com/services/feeds/photos_public.gne?jsoncallback=?";
+  gallatinAPI = "http://gallatin.nyu.edu/academics/courses/jcr:content/content/search.json?";
 
   init = function() {
     setVars();
@@ -21,12 +21,7 @@ Exports.Modules = (function($, undefined) {
   // Display on site
   initAPI = function() {
     console.log(ftags);
-    $.getJSON( gallatinAPI+'?'+ftags, {
-      tags: ftags,
-      tagmode: "any",
-      format: "json"
-    })
-    .done(function( data ) {
+    $.getJSON( gallatinAPI+ftags).done(function( data ) {
       $.each( data.items, function( k, v ) {
         course += '<div>'
         course += v.title
@@ -41,6 +36,7 @@ Exports.Modules = (function($, undefined) {
   initFilters = function() {
     // reset button
     $('.coursebuttonblack').click(function (e) {
+      e.preventDefault();
       filterReset();
     });
 
@@ -53,10 +49,8 @@ Exports.Modules = (function($, undefined) {
 
     // reset filters
     filterReset = function() {
-      $('.coursebutton').removeClass($b);
+      $('.coursebuttonselected').toggleClass('coursebutton coursebuttonselected');
       $('[data-parent="#accordion"]').each(function() {
-        var linkTarget = $(this).attr('href').replace(/[^a-zA-Z 0-9]+/g, '');
-        $(this).attr('href', '#' + linkTarget);
         if (!$(this).hasClass('collapsed')) {
           $(this).addClass('collapsed');
           $(this).attr('aria-expanded', 'false');
