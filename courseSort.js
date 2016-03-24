@@ -6,17 +6,25 @@ Exports.Modules = (function($, undefined) {
   var $b = "coursebuttonblack",
   course = '',
   ftags = '',
-  popped = ('state' in window.history && window.history.state !== null), initialURL = location.href,
+  urlParams = window.location.search,
   gallatinAPI = "http://gallatin.nyu.edu/academics/courses/jcr:content/content/search.json?";
 
   init = function() {
     setVars();
     initFilters();
     initAPI();
+    initURL();
   },
 
   setVars = function() {
     $courseTable = $('.courseList');
+  },
+
+  // Check URL on load for params
+  initURL = function() {
+    if (urlParams.indexOf('=') > -1) {
+      preloadedFilters();
+    };
   },
 
   // Display on site
@@ -30,7 +38,6 @@ Exports.Modules = (function($, undefined) {
       });
       $courseTable.html(course); 
       courseCount(data.items.length)
-
     });
   },
 
@@ -39,6 +46,7 @@ Exports.Modules = (function($, undefined) {
     $('.coursebuttonblack').click(function (e) {
       e.preventDefault();
       filterReset();
+      changeURL('');
     });
 
     // On button click, disable link, add active class, grab all active filters, plus sort and search
@@ -61,6 +69,11 @@ Exports.Modules = (function($, undefined) {
       });
       courseCount();
     };
+    
+    // Take url params, mark filters as selected, hit API, reload courseList 
+    preloadedFilters = function() {
+      // To do: add tasks
+    },
 
     // keep filter panel open if active by removing data-toggle
     keepOpen = function(t, g) {
@@ -90,7 +103,7 @@ Exports.Modules = (function($, undefined) {
       history.pushState(null, null, '/gallatin?'+varArray);
     }
     return false;   
-  }
+  },
 
   courseCount = function(itemCount) {
     // Change html to wrap just number in span
