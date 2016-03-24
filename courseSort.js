@@ -6,6 +6,7 @@ Exports.Modules = (function($, undefined) {
   var $b = "coursebuttonblack",
   course = '',
   ftags = '',
+  popped = ('state' in window.history && window.history.state !== null), initialURL = location.href,
   gallatinAPI = "http://gallatin.nyu.edu/academics/courses/jcr:content/content/search.json?";
 
   init = function() {
@@ -79,12 +80,21 @@ Exports.Modules = (function($, undefined) {
       var a = $(this).attr('href').replace("/content/gallatin/en/academics/courses.html?", "");      
       valArray.push(a);
     });
-    return valArray.join('&');
+    valArray = valArray.join('&');
+    changeURL(valArray);
+    return valArray;
   },
+
+  changeURL = function(varArray) {
+    if(history.pushState) {
+      history.pushState(null, null, '/gallatin?'+varArray);
+    }
+    return false;   
+  }
 
   courseCount = function(itemCount) {
     // Change html to wrap just number in span
-    $('.showing-courses').text(itemCount);
+    $('.showing-courses').text( function(i,txt) {return txt.replace(/\d+/, itemCount); }); 
   };
 
 return {
