@@ -5,7 +5,6 @@ var Exports = {
 Exports.Modules = (function($, undefined) {
   var $b = "coursebuttonblack",
   course = '',
-  ftags = '',
   urlParams = window.location.search,
   gallatinAPI = "http://gallatin.nyu.edu/academics/courses/jcr:content/content/search.json?";
 
@@ -46,9 +45,15 @@ Exports.Modules = (function($, undefined) {
     $('form[name=course-search]').on('submit', function(event){
       event.preventDefault();
       var $search = $(this).find('[name=query]');
-      console.log($search.val());
       console.log(buildArray());
     });
+    //from sort
+    $('.coursedropdown li').click(function (e) {
+      event.preventDefault();
+      var sortOrder = $(this).find('a').attr('href').replace("/content/gallatin/en/academics/courses.html?", "").replace(/ /g, '');      
+      console.log(buildArray(sortOrder));
+    });
+
 
     // keep filter panel open if active by removing data-toggle
     keepOpen = function(t, g) {
@@ -63,8 +68,8 @@ Exports.Modules = (function($, undefined) {
   },
 
   // Get all currently selected filters, search and sort for url and api
-  buildArray = function() {
-    var apiParams = []; 
+  buildArray = function(sortOrder) {
+    apiParams = [];
     //filters
     $('.coursebuttonselected').find('a').each(function() {
       var a = $(this).attr('href').replace("/content/gallatin/en/academics/courses.html?", "");      
@@ -78,11 +83,13 @@ Exports.Modules = (function($, undefined) {
       apiParams.push(searchParam);
     }
     //sort
-    
-    
+    if (sortOrder !== undefined) {
+      apiParams.push(sortOrder);
+    }
     //combine all
     apiParams = apiParams.join('&');
     changeURL(apiParams);
+    callAPI(apiParams)
     return apiParams;
   },
 
@@ -95,9 +102,8 @@ Exports.Modules = (function($, undefined) {
   },
 
   // get API results and pop div
-  callAPI = function() {
-    console.log(ftags);
-    $.getJSON( gallatinAPI+ftags).done(function( data ) {
+  callAPI = function(apiParams) {
+    $.getJSON( gallatinAPI+apiParams).done(function( data ) {
       $.each( data.items, function( k, v ) {
         course += '<div>'
         course += v.title
@@ -121,5 +127,3 @@ return {
 $(document).ready(function() {
   Exports.Modules.init();
 });
-
-
