@@ -12,52 +12,17 @@ Exports.Modules = (function($, undefined) {
   init = function() {
     setVars();
     initFilters();
-    initAPI();
-    initURL();
   },
 
   setVars = function() {
     $courseTable = $('.courseList');
   },
 
-  // Check URL on load for params
-  initURL = function() {
-    if (urlParams.indexOf('=') > -1) {
-      preloadedFilters();
-    };
-  },
-
-  // Display on site
-  initAPI = function() {
-    console.log(ftags);
-    $.getJSON( gallatinAPI+ftags).done(function( data ) {
-      $.each( data.items, function( k, v ) {
-        course += '<div>'
-        course += v.title
-        course += '</div>'
-      });
-      $courseTable.html(course); 
-      courseCount(data.items.length)
-    });
-  },
-
   initFilters = function() {
+
     // reset button
     $('.coursebuttonblack').click(function (e) {
       e.preventDefault();
-      filterReset();
-      changeURL('');
-    });
-
-    // On button click, disable link, add active class, grab all active filters, plus sort and search
-    $('.coursebutton').click(function (e) {
-      e.preventDefault();
-      $(this).toggleClass('coursebutton coursebuttonselected');
-      console.log(buildArray());
-    });
-
-    // reset filters
-    filterReset = function() {
       $('.coursebuttonselected').toggleClass('coursebutton coursebuttonselected');
       $('[data-parent="#accordion"]').each(function() {
         if (!$(this).hasClass('collapsed')) {
@@ -67,13 +32,23 @@ Exports.Modules = (function($, undefined) {
           $(".panel-collapse").attr('aria-expanded', 'false');
         }
       });
+      changeURL('');
       courseCount();
-    };
-    
-    // Take url params, mark filters as selected, hit API, reload courseList 
-    preloadedFilters = function() {
-      // To do: add tasks
-    },
+    });
+
+    // On filter click/search/sort, disable link, add active class
+    $('.coursebutton').click(function (e) {
+      e.preventDefault();
+      $(this).toggleClass('coursebutton coursebuttonselected');
+      console.log(buildArray());
+    });
+    //from searchbar
+    $('form[name=course-search]').on('submit', function(event){
+      event.preventDefault();
+      var $search = $(this).find('[name=query]');
+      console.log($search.val());
+      console.log(buildArray());
+    });
 
     // keep filter panel open if active by removing data-toggle
     keepOpen = function(t, g) {
@@ -87,22 +62,50 @@ Exports.Modules = (function($, undefined) {
     };
   },
 
-  buildArray = function(type) {
-    var valArray = []; 
+  // Get all currently selected filters, search and sort for url and api
+  buildArray = function() {
+    var apiParams = []; 
+    //filters
     $('.coursebuttonselected').find('a').each(function() {
       var a = $(this).attr('href').replace("/content/gallatin/en/academics/courses.html?", "");      
-      valArray.push(a);
+    var allFilters = [a]
+      apiParams.push(allFilters);
     });
-    valArray = valArray.join('&');
-    changeURL(valArray);
-    return valArray;
+    //search
+    var b = $('form[name=course-search]').find('[name=query]').val();
+    if (b != '') {
+      var searchParam = ('query='+b).replace(' ','+'); 
+      apiParams.push(searchParam);
+    }
+    //sort
+    
+    
+    //combine all
+    apiParams = apiParams.join('&');
+    changeURL(apiParams);
+    return apiParams;
   },
 
+  // Add filters to url and history
   changeURL = function(varArray) {
     if(history.pushState) {
       history.pushState(null, null, '/gallatin?'+varArray);
     }
     return false;   
+  },
+
+  // get API results and pop div
+  callAPI = function() {
+    console.log(ftags);
+    $.getJSON( gallatinAPI+ftags).done(function( data ) {
+      $.each( data.items, function( k, v ) {
+        course += '<div>'
+        course += v.title
+        course += '</div>'
+      });
+      $courseTable.html(course); 
+      courseCount(data.items.length)
+    });
   },
 
   courseCount = function(itemCount) {
