@@ -4,6 +4,7 @@ var Exports = {
 
 Exports.Modules = (function($, undefined) {
   var $b = "coursebuttonblack",
+  removeURL = '/content/gallatin/en/academics/courses.html?',
   course = '',
   urlParams = window.location.search,
   gallatinAPI = "http://gallatin.nyu.edu/academics/courses/jcr:content/content/search.json?";
@@ -50,7 +51,7 @@ Exports.Modules = (function($, undefined) {
     //from sort
     $('.coursedropdown li').click(function (e) {
       event.preventDefault();
-      var sortOrder = $(this).find('a').attr('href').replace("/content/gallatin/en/academics/courses.html?", "").replace(/ /g, '');      
+      var sortOrder = $(this).find('a').attr('href').replace(removeURL, "").replace(/ /g, '');      
       console.log(buildArray(sortOrder));
     });
 
@@ -72,7 +73,7 @@ Exports.Modules = (function($, undefined) {
     apiParams = [];
     //filters
     $('.coursebuttonselected').find('a').each(function() {
-      var a = $(this).attr('href').replace("/content/gallatin/en/academics/courses.html?", "");      
+      var a = $(this).attr('href').replace(removeURL, "");      
     var allFilters = [a]
       apiParams.push(allFilters);
     });
@@ -105,18 +106,20 @@ Exports.Modules = (function($, undefined) {
   callAPI = function(apiParams) {
     $.getJSON( gallatinAPI+apiParams).done(function( data ) {
       $.each( data.items, function( k, v ) {
-        course += '<div>'
-        course += v.title
-        course += '</div>'
+        course += '<table><thead><tr><th>'+v.course+'</th><th>Lib Arts<br>'+v['foundation-libarts']+'</th><th>Hist &amp; Cult<br>'+v['foundation-histcult']+'<br></th><th>'+v.term+' '+v.year+'</th></tr></thead><tbody><tr><td colspan="4"><h3>'+v.title+'</h3></td></tr><tr><td>'+v.credit+' units</td><td>'+v.days+'<br />'+v.times+'<br />'+v.days2+'<br />'+v.times2+'</td><td>'
+        v.instructors.each(function(i,l) { course += '<a href="'+l+'">'+i+'</a>' });
+        course += '</td><td></td></tr><tr><td colspan="4"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-parent="#accordion" data-toggle="collapse" href="#'+v.course+v.term+v.year+'"></a></h4></div><div class="panel-collapse collapse" id="'+v.course+v.term+v.year+'"><div class="panel-body"><p><strong>Description</strong></p>'+v.description+'<hr><p><strong>Type</strong></p><p>'+v.type+'</p></div></div></div></td></tr></tbody></table>'
       });
       $courseTable.html(course); 
       courseCount(data.items.length)
     });
   },
 
+  // Change html to wrap just number in span
   courseCount = function(itemCount) {
-    // Change html to wrap just number in span
-    $('.showing-courses').text( function(i,txt) {return txt.replace(/\d+/, itemCount); }); 
+    if(itemCount !== undefined) {
+      $('.showing-courses').text( function(i,amt) {return amt.replace(/\d+/, itemCount); }); 
+    };
   };
 
 return {
