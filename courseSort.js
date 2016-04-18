@@ -4,18 +4,14 @@ var Exports = {
 
 Exports.Modules = (function($, undefined) {
   var $b = "coursebuttonblack",
+  apiParams = 'year=2015',
   removeURL = '/content/gallatin/en/academics/courses.html?',
   course = '',
   urlParams = window.location.search,
   gallatinAPI = "http://gallatin.nyu.edu/academics/courses/jcr:content/content/search.json?";
 
 init = function() {
-  setVars();
   initFilters();
-},
-
-setVars = function() {
-  $courseTable = $('.courseList');
 },
 
 initFilters = function() {
@@ -56,43 +52,41 @@ initFilters = function() {
   });
 
   // keep filter panel open if active by removing data-toggle
-// keep filter panel open if active by removing data-toggle
-    $('.coursebutton').click(function (e) {
-      var link = $(this).parents('div.panel-default').find('[data-toggle="collapse"]');
-      if ($(this).parents('div.panel-default').find('.coursebuttonselected').length == 0 ) {
-        link.attr('data-toggle', 'collapse');
-      }          
-      else {
-        link.attr('data-toggle', 'no-collapse');
-      }   
-    }); 
-  };
+  $('.coursebutton').click(function (e) {
+    var link = $(this).parents('div.panel-default').find('[data-toggle="collapse"]');
+    if ($(this).parents('div.panel-default').find('.coursebuttonselected').length > 0 ) {
+      $(link).attr('data-toggle', 'no-collapse');
+    } else {
+      $(link).attr('data-toggle', 'collapse');
+    }   
+  }); 
+};
 
-  // Get all currently selected filters, search and sort for url and api
-  buildArray = function(sortOrder) {
-    apiParams = [];
-    //filters
-    $('.coursebuttonselected').find('a').each(function() {
-      var a = $(this).attr('href').replace(removeURL, "");      
-      var allFilters = [a]
-      apiParams.push(allFilters);
-    });
-    //search
-    var b = $('form[name=course-search]').find('[name=query]').val();
-    if (b != '') {
-      var searchParam = ('query='+b).replace(' ','+'); 
-      apiParams.push(searchParam);
-    }
-    //sort
-    if (sortOrder !== undefined) {
-      apiParams.push(sortOrder);
-    }
-    //combine all
-    apiParams = apiParams.join('&');
-    changeURL(apiParams);
-    callAPI(apiParams)
-      return apiParams;
-  },
+// Get all currently selected filters, search and sort for url and api
+buildArray = function(sortOrder) {
+  apiParams = [];
+  //filters
+  $('.coursebuttonselected').find('a').each(function() {
+    var a = $(this).attr('href').replace(removeURL, "");      
+    var allFilters = [a]
+    apiParams.push(allFilters);
+  });
+  //search
+  var b = $('form[name=course-search]').find('[name=query]').val();
+  if (b != '') {
+    var searchParam = ('query='+b).replace(' ','+'); 
+    apiParams.push(searchParam);
+  }
+  //sort
+  if (sortOrder !== undefined) {
+    apiParams.push(sortOrder);
+  }
+  //combine all
+  apiParams = apiParams.join('&');
+  changeURL(apiParams);
+  callAPI(apiParams)
+    return apiParams;
+},
 
   // Add filters to url and history
   changeURL = function(varArray) {
@@ -101,31 +95,36 @@ initFilters = function() {
     }
     return false;   
   },
-
   // get API results and pop div
+  //$.getJSON( gallatinAPI+apiParams, function( data ) {
+  //courseCount(data.items.length)
   callAPI = function(apiParams) {
-    $.getJSON( gallatinAPI+apiParams).done(function( data ) {
-      $.each( data.items, function( k, v ) {
-        course += '<table><thead><tr><th>'+v.course+'</th><th>Lib Arts<br>'+v['foundation-libarts']+'</th><th>Hist &amp; Cult<br>'+v['foundation-histcult']+'<br></th><th>'+v.term+' '+v.year+'</th></tr></thead><tbody><tr><td colspan="4"><h3>'+v.title+'</h3></td></tr><tr><td>'+v.credit+' units</td><td>'+v.days+'<br />'+v.times+'<br />'+v.days2+'<br />'+v.times2+'</td><td>'
-        v.instructors.each(function(i,l) { course += '<a href="'+l+'">'+i+'</a>' });
-      course += '</td><td></td></tr><tr><td colspan="4"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-parent="#accordion" data-toggle="collapse" href="#'+v.course+v.term+v.year+'"></a></h4></div><div class="panel-collapse collapse" id="'+v.course+v.term+v.year+'"><div class="panel-body"><p><strong>Description</strong></p>'+v.description+'<hr><p><strong>Type</strong></p><p>'+v.type+'</p></div></div></div></td></tr></tbody></table>'
+    $.getJSON( "http://gallatin.nyu.edu/academics/courses/jcr:content/content/search.json?year=2015&term=FA", function( data ) {
+      var course = [];
+      $.each( data, function( k, v ) {
+        course.push('<table><thead><tr><th>'+v.course+'</th><th>Lib Arts<br>'+v['foundation-libarts']+'</th><th>Hist &amp; Cult<br>'+v['foundation-histcult']+'<br></th><th>'+v.term+' '+v.year+'</th></tr></thead><tbody><tr><td colspan="4"><h3>'+v.title+'</h3></td></tr><tr><td>'+v.credit+' units</td><td>'+v.days+'<br />'+v.times+'<br />'+v.days2+'<br />'+v.times2+'</td><td>');
+        if (v.instructors != undefined) {
+          v.instructors.forEach(function(i,l) { course.push('<a href="'+l+'">'+i+'</a>') });
+        }
+        course.push('</td><td></td></tr><tr><td colspan="4"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-parent="#accordion" data-toggle="collapse" href="#'+v.course+v.term+v.year+'"></a></h4></div><div class="panel-collapse collapse" id="'+v.course+v.term+v.year+'"><div class="panel-body"><p><strong>Description</strong></p>'+v.description+'<hr><p><strong>Type</strong></p><p>'+v.type+'</p></div></div></div></td></tr></tbody></table>');
       });
-      $courseTable.html(course); 
-      courseCount(data.items.length)
+
+      $('.courseList').html(course); 
     });
   },
 
-  // Change html to wrap just number in span
-  courseCount = function(itemCount) {
-    if(itemCount !== undefined) {
-      $('.showing-courses').text( function(i,amt) {return amt.replace(/\d+/, itemCount); }); 
-    };
-  };
 
-return {
-  init: init
-};
-}(jQuery));
+    // Change html to wrap just number in span
+    courseCount = function(itemCount) {
+      if(itemCount !== undefined) {
+        $('.showing-courses').text( function(i,amt) {return amt.replace(/\d+/, itemCount); }); 
+      };
+    };
+
+    return {
+      init: init
+    };
+  }(jQuery));
 
 $(document).ready(function() {
   Exports.Modules.init();
