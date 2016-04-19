@@ -36,22 +36,25 @@ initFilters = function() {
   $('.coursebutton').click(function (e) {
     e.preventDefault();
     $(this).toggleClass('coursebutton coursebuttonselected');
+    buildArray();
   });
   //from searchbar
   $('form[name=course-search]').on('submit', function(event){
     event.preventDefault();
     var $search = $(this).find('[name=query]');
+    buildArray();
   });
   //from sort
   $('.coursedropdown li').click(function (e) {
     event.preventDefault();
     var sortOrder = $(this).find('a').attr('href').replace(removeURL, "").replace(/ /g, '');      
+    buildArray();
   });
 
   // keep filter panel open if active by removing data-toggle
   $('.coursebutton').click(function (e) {
     var link = $(this).parents('div.panel-default').find('[data-toggle]');
-    if ($(this).parents('div.panel-default').find('.coursebuttonselected').length >= 1 ) {
+    if ($(this).parents('div.panel-default').find('.coursebuttonselected').length > 0 ) {
       $(link).attr('data-toggle', 'no-collapse');
     } else {
       $(link).attr('data-toggle', 'collapse');
