@@ -96,20 +96,35 @@ buildArray = function(sortOrder) {
     return false;   
   },
   // get API results and pop div
-  //$.getJSON( gallatinAPI+apiParams, function( data ) {
-  //courseCount(data.items.length)
   callAPI = function(apiParams) {
-    $.getJSON( "http://gallatin.nyu.edu/academics/courses/jcr:content/content/search.json?year=2015&term=FA", function( data ) {
-      var course = [];
+    $.getJSON( gallatinAPI+apiParams, function( data ) {
+      var course = '';
+      var instructors = "";
+      var count = 0;
       $.each( data, function( k, v ) {
-        course.push('<table><thead><tr><th>'+v.course+'</th><th>Lib Arts<br>'+v['foundation-libarts']+'</th><th>Hist &amp; Cult<br>'+v['foundation-histcult']+'<br></th><th>'+v.term+' '+v.year+'</th></tr></thead><tbody><tr><td colspan="4"><h3>'+v.title+'</h3></td></tr><tr><td>'+v.credit+' units</td><td>'+v.days+'<br />'+v.times+'<br />'+v.days2+'<br />'+v.times2+'</td><td>');
-        if (v.instructors != undefined) {
-          v.instructors.forEach(function(i,l) { course.push('<a href="'+l+'">'+i+'</a>') });
-        }
-        course.push('</td><td></td></tr><tr><td colspan="4"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-parent="#accordion" data-toggle="collapse" href="#'+v.course+v.term+v.year+'"></a></h4></div><div class="panel-collapse collapse" id="'+v.course+v.term+v.year+'"><div class="panel-body"><p><strong>Description</strong></p>'+v.description+'<hr><p><strong>Type</strong></p><p>'+v.type+'</p></div></div></div></td></tr></tbody></table>');
+        count++;
+        if (v['foundation-libarts'] == null) { v['foundation-libarts'] = ''; }
+        if (v['foundation-histcult'] == null) { v['foundation-histcult'] = ''; }
+        if (v.times == null) { v.times = ''; }
+        if (v.times2 == null) { v.times2 = ''; }
+        course += '<table><thead><tr><th>'+v.course+'</th><th>Lib Arts<br>'+v['foundation-libarts']+'</th><th>Hist &amp; Cult<br>'+v['foundation-histcult']+'<br></th><th>'+v.term+' '+v.year+'</th></tr></thead><tbody><tr><td colspan="4"><h3>'+v.title+'</h3></td></tr><tr><td>'+v.credit+' units</td><td>'+v.days+'<br />'+v.times+'<br />'+v.days2+'<br />'+v.times2+'</td><td>'
+        if (v.instructors !== undefined) {
+            var name = Object.keys(v.instructors[0])[0];
+            var link = v.instructors[0][name];
+            course += '<a href="'+link+'">'+name+'</a>';
+            if(v.instructors > 1) {
+              var name = Object.keys(v.instructors[1])[0];
+              var link = v.instructors[1][name];
+              course += '<br /><a href="'+link+'">'+name+'</a>';
+            }
+          }
+        course += '</td><td></td></tr><tr><td colspan="4"><div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-parent="#accordion" data-toggle="collapse" href="#'+v.course+v.term+v.year+'"></a></h4></div><div class="panel-collapse collapse" id="'+v.course+v.term+v.year+'"><div class="panel-body"><p><strong>Description</strong></p>'+v.description+'<hr><p><strong>Type</strong></p><p>'+v.type;
+        if (!!v.notes){ course+= '<hr><p><strong>Note</strong></p><p>'+v.notes+'</p>'; }
+        if (!!v.syllabus){ course+= '<hr><p><strong>Syllabus</strong></p><p><a href="'+v.syllabus+'">Link</a></p>'; }
+        course += '</div></div></div></td></tr></tbody></table>'
       });
-
       $('.courseList').html(course); 
+      courseCount(count);
     });
   },
 
