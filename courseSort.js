@@ -18,14 +18,13 @@ initFilters = function() {
 
   // reset button
   $('.coursebuttonblack').click(function (e) {
-    e.preventDefault();
+    event.preventDefault();
     $('.coursebuttonselected').toggleClass('coursebutton coursebuttonselected');
-    $('[data-parent="#accordion"]').each(function() {
+    $("[data-toggle='no-collapse']").attr('data-toggle', 'collapse').addClass('collapsed').attr('aria-expanded', 'false');
+  $(".panel-collapse").removeClass('in').attr('aria-expanded', 'false');
+    $('.course-filter').each(function() {
       if (!$(this).hasClass('collapsed')) {
-        $(this).addClass('collapsed');
-        $(this).attr('aria-expanded', 'false');
-        $(".panel-collapse").removeClass('in');
-        $(".panel-collapse").attr('aria-expanded', 'false');
+        $(this).addClass('collapsed').attr('aria-expanded', 'false');
       }
     });
     changeURL('');
