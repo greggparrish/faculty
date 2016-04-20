@@ -8,7 +8,7 @@ Exports.Modules = (function($, undefined) {
   removeURL = '/content/gallatin/en/academics/courses.html?',
   course = '',
   urlParams = window.location.search,
-  gallatinAPI = "http://gallatin.nyu.edu/academics/courses/jcr:content/content/search.json?";
+  gallatinAPI = "/content/gallatin/en/academics/courses/jcr:content/content/search.json?"
 
 init = function() {
   initFilters();
