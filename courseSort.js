@@ -7,6 +7,7 @@ Exports.Modules = (function($, undefined) {
   apiParams = 'year=2015',
   removeURL = '/content/gallatin/en/academics/courses.html?',
   course = '',
+  baseurl = window.location.href.split('?')[0],
   urlParams = window.location.search,
   gallatinAPI = "/content/gallatin/en/academics/courses/jcr:content/content/search.json?"
 
@@ -90,7 +91,7 @@ buildArray = function(sortOrder) {
   // Add filters to url and history
   changeURL = function(varArray) {
     if(history.pushState) {
-      history.pushState(null, null, '/gallatin?'+varArray);
+      history.pushState(null, null, baseurl+'?'+varArray);
     }
     return false;   
   },
@@ -126,7 +127,6 @@ buildArray = function(sortOrder) {
       courseCount(count);
     });
   },
-
 
     // Change html to wrap just number in span
     courseCount = function(itemCount) {
