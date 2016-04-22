@@ -12,7 +12,16 @@ Exports.Modules = (function($, undefined) {
   gallatinAPI = "/content/gallatin/en/academics/courses/jcr:content/content/search.json?"
 
 init = function() {
+  openPanels();
   initFilters();
+},
+
+openPanels = function() {
+ // on load, check to see if active filters, if so, open their respective panels
+ if ($(".panel-body").find(".coursebuttonselected").length > 0){ 
+   var link = $('.coursebuttonselected').parents('div.panel-default').find('[data-toggle]');
+   $(link).attr('data-toggle', 'no-collapse');
+ }
 },
 
 initFilters = function() {
@@ -33,7 +42,7 @@ initFilters = function() {
   });
 
   // On filter click/search/sort, disable link, add active class
-  $('.coursebutton').click(function (e) {
+  $('.panel-body div').click(function (e) {
     e.preventDefault();
     $(this).toggleClass('coursebutton coursebuttonselected');
     buildArray();
