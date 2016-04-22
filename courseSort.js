@@ -58,7 +58,7 @@ initFilters = function() {
   $('.coursedropdown li').click(function (e) {
     event.preventDefault();
     var sortOrder = $(this).find('a').attr('href').replace(removeURL, "").replace(/ /g, '');      
-    buildArray();
+    buildArray(sortOrder);
   });
 
   // keep filter panel open if active by removing data-toggle
