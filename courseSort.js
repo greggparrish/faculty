@@ -18,9 +18,10 @@ init = function() {
 
 openPanels = function() {
  // on load, check to see if active filters, if so, open their respective panels
- if ($(".panel-body").find(".coursebuttonselected").length > 0){ 
-   var link = $('.coursebuttonselected').parents('div.panel-default').find('[data-toggle]');
-   $(link).attr('data-toggle', 'no-collapse');
+ if ($(".course-filter").find(".coursebuttonselected").length > 0){ 
+   var panel = $('.coursebuttonselected').parents('div.panel-default');
+   $(panel).find('[data-toggle]').attr('data-toggle', 'no-collapse').removeClass('collapsed');
+   $(panel).find('.panel-collapse').removeClass('in');
  }
 },
 
