@@ -21,7 +21,7 @@ openPanels = function() {
  if ($(".course-filter").find(".coursebuttonselected").length > 0){ 
    var panel = $('.coursebuttonselected').parents('div.panel-default');
    $(panel).find('[data-toggle]').attr('data-toggle', 'no-collapse').removeClass('collapsed');
-   $(panel).find('.panel-collapse').removeClass('in');
+   $(panel).find('.panel-collapse').addClass('in');
  }
 },
 
