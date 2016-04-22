@@ -95,7 +95,6 @@ buildArray = function(sortOrder) {
   apiParams = apiParams.join('&');
   changeURL(apiParams);
   callAPI(apiParams)
-    return apiParams;
 },
 
   // Add filters to url and history
