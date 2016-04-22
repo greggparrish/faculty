@@ -62,7 +62,7 @@ initFilters = function() {
   });
 
   // keep filter panel open if active by removing data-toggle
-  $('.coursebutton').click(function (e) {
+  $('.panel-body div').click(function (e) {
     var link = $(this).parents('div.panel-default').find('[data-toggle]');
     if ($(this).parents('div.panel-default').find('.coursebuttonselected').length > 0 ) {
       $(link).attr('data-toggle', 'no-collapse');
