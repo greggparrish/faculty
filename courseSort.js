@@ -145,7 +145,7 @@ buildArray = function(sortOrder) {
         $('.showing-courses').text( function(i,amt) {return amt.replace(/\d+/, itemCount); }); 
       }
       else if (itemCount > 200) {
-        $('.showing-courses').text('Found over 200 results'); 
+        $('.showing-courses').text('Found more than 200'); 
       }
     };
   };
