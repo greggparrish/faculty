@@ -9,7 +9,7 @@ Exports.Modules = (function($, undefined) {
   course = '',
   baseurl = window.location.href.split('?')[0],
   urlParams = window.location.search,
-  gallatinAPI = "/content/gallatin/en/academics/courses/jcr:content/content/search.json?"
+  gallatinAPI = "http://gallatin.digicomm.home.nyu.edu:4503/content/gallatin/en/academics/courses/jcr:content/content/search.json?"
 
   init = function() {
     openPanels();
@@ -50,6 +50,7 @@ Exports.Modules = (function($, undefined) {
     });
     //from searchbar
     $('form[name=course-search]').on('submit', function(event){
+      $('form[name=course-search]').val('');
       event.preventDefault();
       var $search = $(this).find('[name=query]');
       buildArray();
