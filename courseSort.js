@@ -142,7 +142,7 @@ buildArray = function(sortOrder) {
   courseCount = function(itemCount) {
     if(itemCount !== undefined) {
       if(itemCount < 200) {
-        $('.showing-courses').text( "Found" + itemCount + "courses"); 
+        $('.showing-courses').text( "Found " + itemCount + " courses"); 
       }
       else if (itemCount > 200) {
         $('.showing-courses').text('Found more than 200'); 
