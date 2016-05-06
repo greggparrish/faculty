@@ -9,8 +9,8 @@ Exports.Modules = (function($, undefined) {
   course = '',
   baseurl = window.location.href.split('?')[0],
   urlParams = window.location.search,
-  gallatinAPI = "http://gallatin.nyu.edu/academics/courses/jcr:content/content/search.json?"
-  //gallatinAPI = "/content/gallatin/en/academics/courses/jcr:content/content/search.json?"
+  //gallatinAPI = "http://gallatin.nyu.edu/academics/courses/jcr:content/content/search.json?"
+  gallatinAPI = "/content/gallatin/en/academics/courses/jcr:content/content/search.json?"
 
   init = function() {
     openPanels();
@@ -42,7 +42,6 @@ Exports.Modules = (function($, undefined) {
       changeURL('');
       courseCount();
     });
-
     // On filter click/search/sort, disable link, add active class
     $('.panel-body div').click(function(event) {
       event.preventDefault();
@@ -104,10 +103,10 @@ buildArray = function(sortOrder) {
       var count = data['totalMatches'];
       delete data['totalMatches'];
       $.each( data, function( k, v ) {
-        if (v['foundation-libarts'] === null) { v['foundation-libarts'] = ''; }
-        if (v['foundation-histcult'] === null) { v['foundation-histcult'] = ''; }
-        if (v.times === null) { v.times = ''; }
-        if (v.times2 === null) { v.times2 = ''; }
+        if (v['foundation-libarts'] == null) { v['foundation-libarts'] = ''; }
+        if (v['foundation-histcult'] == null) { v['foundation-histcult'] = ''; }
+        if (v.times == null) { v.times = ''; }
+        if (v.times2 == null) { v.times2 = ''; }
         course += '<table><thead><tr><th>'+v.course+'</th><th>Lib Arts<br>'+v['foundation-libarts']+'</th><th>Hist &amp; Cult<br>'+v['foundation-histcult']+'<br></th><th>'+v.term+' '+v.year+'</th></tr></thead><tbody><tr><td colspan="4"><h3>'+v.title+'</h3></td></tr><tr><td>'+v.credit+' units</td><td>'+v.days+'<br />'+v.times+'<br />'+v.days2+'<br />'+v.times2+'</td><td>'
         if (v.instructors !== undefined) {
           var name = Object.keys(v.instructors[0])[0];
