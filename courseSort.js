@@ -85,6 +85,7 @@ buildArray = function(sortOrder) {
   //combine all
   apiParams = apiParams.join('&');
   changeURL(apiParams);
+  $('.courseList').html('')
   callAPI(apiParams)
 },
 
