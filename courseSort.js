@@ -9,8 +9,8 @@ Exports.Modules = (function($, undefined) {
   course = '',
   baseurl = window.location.href.split('?')[0],
   urlParams = window.location.search,
-  //gallatinAPI = "http://gallatin.nyu.edu/academics/courses/jcr:content/content/search.json?"
-  gallatinAPI = "/content/gallatin/en/academics/courses/jcr:content/content/search.json?"
+  gallatinAPI = "http://gallatin.nyu.edu/academics/courses/jcr:content/content/search.json?"
+  //gallatinAPI = "/content/gallatin/en/academics/courses/jcr:content/content/search.json?"
 
   init = function() {
     openPanels();
@@ -40,6 +40,7 @@ Exports.Modules = (function($, undefined) {
         }
       });
       changeURL('');
+      callAPI('');
       courseCount();
     });
     // On filter click/search/sort, disable link, add active class
@@ -86,7 +87,7 @@ buildArray = function(sortOrder) {
   apiParams = apiParams.join('&');
   changeURL(apiParams);
   $('.courseList').html('')
-  callAPI(apiParams)
+    callAPI(apiParams)
 },
 
   // Add filters to url and history
@@ -126,13 +127,18 @@ buildArray = function(sortOrder) {
       });
       $('.courseList').html(course); 
       courseCount(count);
+    }).fail(function(d) {
+      courseCount(0);
     });
   },
 
   // Change found courses to number or "over 200"
   courseCount = function(itemCount) {
     if(itemCount !== undefined) {
-      if(itemCount < 200) {
+      if(itemCount == 0) {
+        $('.showing-courses').text( "No results were found for your search"); 
+      }
+      else if(itemCount < 200) {
         $('.showing-courses').text( "Found " + itemCount + " courses"); 
       }
       else if (itemCount > 200) {
