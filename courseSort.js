@@ -9,8 +9,8 @@ Exports.Modules = (function($, undefined) {
   course = '',
   baseurl = window.location.href.split('?')[0],
   urlParams = window.location.search,
-  gallatinAPI = "http://gallatin.nyu.edu/academics/courses/jcr:content/content/search.json?"
-  //gallatinAPI = "/content/gallatin/en/academics/courses/jcr:content/content/search.json?"
+  //gallatinAPI = "http://gallatin.nyu.edu/academics/courses/jcr:content/content/search.json?"
+  gallatinAPI = "/content/gallatin/en/academics/courses/jcr:content/content/search.json?"
 
   init = function() {
     openPanels();
